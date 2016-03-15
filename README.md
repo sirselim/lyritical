@@ -7,7 +7,7 @@ The idea came to me as I was driving listening to Spotify - I wonder how many ti
 
 ## What does it do?
 
-Currently there are functions to explore the number of times words are used in a given song, or by a given artist (so across all of their songs). `lyritical` scraps lyrics from lyrics.com (*I will look to expand this later*) using the `rvest` package.
+Currently there are functions to explore the number of times words are used in a given song, or by a given artist (so across all of their songs). `lyritical` uses web-scraping to pull lyrics from lyrics.com (*I will look to expand this later*) using the `rvest` package.
 
 ### song_wordcloud
 
@@ -19,7 +19,9 @@ This function takes an artist name as input and pulls in all available lyrics an
 
   - number of songs listed for the artist
   - number of songs with lyrics available
-  - 
+  - average number of words per song
+  - most words per song (reports the song)
+  - least words per song (reports the song)
 
 example:
 
@@ -34,8 +36,8 @@ example:
     there were 106 songs found on lyrics.com for Mastodon  
     12 songs had lyrics available  
     the average number of words per song for Mastodon is 174  
-    the most words per song for Mastodon is 533  
-    the least words per song for Mastodon is 62  
+    the most words per song for Mastodon is 533 (last baron) 
+    the least words per song for Mastodon is 62 (creature lives)  
 
 ## Things to do
 
