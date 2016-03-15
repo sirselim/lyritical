@@ -11,9 +11,9 @@ example:
 
 `artist_wordcloud(artist = 'Mastodon', verbose = F, max.words = 300)`
 
-*artist*: your favourite artist ()obviously)  
-*verbose*: display a scrolling list of all songs as they are scraped from lyrics.com  
-*max.words*: how many words should the wordcloud render?
+  - *artist*: your favourite artist (obviously)  
+  - *verbose*: display a scrolling list of all songs as they are scraped from lyrics.com  
+  - *max.words*: how many words should the wordcloud render?
 
 ## Thing to do
 
