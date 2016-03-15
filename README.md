@@ -11,7 +11,16 @@ Currently there are functions to explore the number of times words are used in a
 
 ### song_wordcloud
 
-...in development...
+Provide the artist and the song title and this function will generate a wordcloud, allowing direct visualisation of most present lyrics. This will also return the number of words in the song, the number of unique words and the word that appears the most (*still working on filtering 'junk' words*).
+
+example:
+
+    song_wordcloud(artist = 'sia', song = 'chandelier')
+
+    There are 241 words in this song, and 88 are unique. 
+    The word tonight appears most at 13 times.
+
+![](images/sia_chandelier_wordcloud.png)
 
 ### artist_wordcloud
 
@@ -46,12 +55,17 @@ example:
   - work on reducing the number of 'filler' words reported (can, the, ... etc.)
   - add additional sources of lyrics
     + this adds complexity as there will need to be a way to removed duplicates
+  - could get track metadata (length etc) and compare to other statistics
+  - add a cache system where there is a check for previous artist searches
+    + if artist has a csv file saved load and generate wordcloud, if not run as usual
+    + add an overwrite argument to the function 
 
 ## Dependencies
 
-There are currently 4 `R` packages required:
+There are currently 5 `R` packages required:
 
-  - rvest
-  - magrittr
-  - wordcloud
-  - XML
+  - `rvest`
+  - `magrittr`
+  - `wordcloud`
+  - `XML`
+  - `RColorBrewer`
