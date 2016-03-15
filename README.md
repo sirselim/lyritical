@@ -15,7 +15,9 @@ example:
   - *verbose*: display a scrolling list of all songs as they are scraped from lyrics.com  
   - *max.words*: how many words should the wordcloud render?
 
-## Thing to do
+![](images/artist_mastodon_cloud.png)
+
+## Things to do
 
   - convert to realtime shiny app
   - interactive wordclouds? (maybe using D3 or htmltools) 
