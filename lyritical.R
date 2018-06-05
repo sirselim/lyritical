@@ -1,65 +1,52 @@
 #### lyritical: analysis of song lyrics
 ## author: Miles Benton
 ## created: 2016-03-14
-## last modified: 2016-03-16
+## last modified: 2018-06-05
 
 # load required packages
-require(rvest)
-require(magrittr)
-require(wordcloud)
-require(XML)
-require(RColorBrewer)
+require(geniusR)
+require(tidytext)
+require(wordcloud2)
+require(tidyverse)
 
 ##########################################################################
 ############################# song_wordcloud #############################
-## using decoda for lyrics                                              ##
-## eg. 'http://www.decoda.com/metallica-one-lyrics'                     ##
+##                                                                      ##
 ## example usage                                                        ##
 # song_wordcloud(song = 'hallowed be thy name', artist = 'iron maiden') ##
 ##########################################################################
 
 song_wordcloud <- function(song, artist) {
   
-  # define the search term
-  lyric_search <- paste(artist, song, 'lyrics', sep = '-') %>% gsub(' ', '-', .)
+  # now using the geniusR package to scrape info
+  genius_data <- genius_lyrics(artist = artist, song = song)
   
-  # generate the html link
-  lyric_html <- paste0('http://www.decoda.com/', lyric_search) %>% tolower(.) %>% gsub(' ', '', .)
+  tidy_genius <- genius_data %>% 
+    unnest_tokens(word, lyric) %>% 
+    anti_join(stop_words)
   
-  # scrape the html
-  lyrics <- read_html(lyric_html)
+  word_data <- tidy_genius %>% 
+    count(word, sort = TRUE)
   
   # extract and clean the lyrics
-  lyrics_clean <- lyrics %>%
-    html_node("#lyrics-output") %>% 
-    # html_text() %>% 
-    gsub('<br/>', ' ', .) %>% 
+  lyrics_clean <- genius_data$lyric %>%
+    gsub('<br>', ' ', .) %>%
     gsub('.*<p>|</p>.*', '', .) %>%
-    gsub('  |   ', ' ', .) %>% 
+    gsub('  |   ', ' ', .) %>%
     gsub("[[:punct:]]", "", .) %>%
     strsplit(., split = ' ') %>%
     unlist(.) %>%
     tolower(.)
-  lyrics_clean <- lyrics_clean[lyrics_clean != ""] 
-  
-  # horrible line below that needs addressing, some songs contain info that needs trimming out
-  lyrics_clean <- lyrics_clean[lyrics_clean %>% grep('classlyr|chorusspan', ., invert = T)] %>% gsub('.*span|chorus', '', .)
-  lyrics_clean <- lyrics_clean[lyrics_clean != ""] 
-  # filter 'junk' words
-  lyrics_clean2 <- lyrics_clean[grep('^to$|^of$|^a$|^i$|^the$|^for$|^in$|^on$|^and$|^im$|^me$', lyrics_clean, invert = T, fixed = F)]
-  
+  lyrics_clean <- lyrics_clean[lyrics_clean != ""]
+ 
   # explore/analysis of lyrics
-  cat('\n', 'There are', length(lyrics_clean), 'words in this song, and', (unique(lyrics_clean) %>% length(.)), 'are unique.', '\n')
-  lyrics_sorted <- table(lyrics_clean2) %>% sort(.) 
-  cat('\n', 'The word', names(lyrics_sorted)[length(lyrics_sorted)], 'appears most at', lyrics_sorted[length(lyrics_sorted)], 'times.', '\n')
-  
-  # define a colour pallete
-  require(RColorBrewer)
-  pal <- brewer.pal(6, "Dark2")
-  pal <- pal[-(1)]
-  # wordcloud
-  suppressWarnings(wordcloud(lyrics_clean, min.freq = 1, colors = pal))
-  
+  cat('\n', 'There are', length(lyrics_clean), 'words in this song, and', (unique(lyrics_clean) %>% length(.)), 'of these are unique.', '\n')
+  lyrics_sorted <- table(lyrics_clean) %>% sort(.) 
+  cat('\n', 'The word', paste0('"', names(lyrics_sorted)[length(lyrics_sorted)], '"'), 'appears most at', 
+      lyrics_sorted[length(lyrics_sorted)], 'times.', '\n')
+
+  # create wordcloud
+  suppressWarnings(wordcloud2(word_data, minSize = 1))
 }
 ## END
 ##########################################################################
