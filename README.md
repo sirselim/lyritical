@@ -62,23 +62,7 @@ This function takes an artist name as input and pulls in all available lyrics an
   - most words per song (reports the song)
   - least words per song (reports the song)
 
-example:
-
-`artist_wordcloud(artist = 'Mastodon', verbose = F, max.words = 300)`
-
-  - *artist*: your favourite artist (obviously)  
-  - *verbose*: display a scrolling list of all songs as they are scraped from lyrics.com  
-  - *max.words*: how many words should the wordcloud render?
-
-![](images/artist_mastodon_wordcloud.png)
-
-    there were 106 songs found on lyrics.com for Mastodon  
-    12 songs had lyrics available  
-    the average number of words per song for Mastodon is 174  
-    the most words per song for Mastodon is 533 (last baron) 
-    the least words per song for Mastodon is 62 (creature lives)  
-
-The below code is my current implementation to 'grab' all albums for a given artist from genius.com:
+The below code is my current implementation to 'grab' all albums for a given artist from [geniusR](https://github.com/JosiahParry/geniusR), 'tidy' them, grab their lyrics, tidy these and final create the wordcloud. This is currently 'working' but does/will break often, you have been warned "here there be dragons!" (and hacked together code). If you are wanting to test the below please remember to have some patience as it does take some time when scrapping multiple albums. 
 
 ```R
 ## get all genius albums for a given artist
@@ -86,7 +70,7 @@ The below code is my current implementation to 'grab' all albums for a given art
 require(RCurl)
 require(XML)
 
-artist <- 'Chevelle'
+artist <- 'Mastodon'
 
 base_url <- "https://genius.com/artists/"
 query <- paste(artist, sep = "-") %>% str_replace_all(" ", "-")
@@ -95,8 +79,31 @@ parsed <- htmlParse(url2)
 links <- xpathSApply(parsed,path = "//a",xmlGetAttr,"href")
 links <- links[grep('https://genius.com/albums/', links)] 
 albums <- unlist(lapply(strsplit(links, split = '/'), `[[`, 6))
-albums %>% unique()
+albums <- albums %>% tolower() %>% unique()
+  
+albums <-  tibble(
+  artist = c(rep(artist, length(albums))),
+  album = c(albums)
+)
+
+album_lyrics <- albums %>% 
+  mutate(tracks = map2(artist, album, genius_album))
+
+lyrics <- album_lyrics %>% 
+  unnest(tracks) %>%    # Expanding the lyrics 
+  arrange(desc(artist)) # Arranging by artist name 
+
+tidy_genius <- lyrics %>% 
+  unnest_tokens(word, lyric) %>% 
+  anti_join(stop_words)
+
+word_data <- tidy_genius %>% 
+  count(word, sort = TRUE)
+
+wordcloud2(word_data, minSize = 1)
 ```
+
+![](images/artist_mastodon_wordcloud.png)
 
 ## Things to do
 
