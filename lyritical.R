@@ -40,11 +40,58 @@ song_wordcloud <- function(song, artist) {
   lyrics_clean <- lyrics_clean[lyrics_clean != ""]
  
   # explore/analysis of lyrics
-  cat('\n', 'There are', length(lyrics_clean), 'words in this song, and', (unique(lyrics_clean) %>% length(.)), 'of these are unique.', '\n')
+  cat('\n', 'Wordcloud for the song', paste0('"', song, '"'), 'by the artist', paste0('"', artist, '".'))
+  cat('\n', 'There are', length(lyrics_clean), 'words in this song, and', (unique(lyrics_clean) %>% length(.)), 'of these are unique.')
   lyrics_sorted <- table(lyrics_clean) %>% sort(.) 
   cat('\n', 'The word', paste0('"', names(lyrics_sorted)[length(lyrics_sorted)], '"'), 'appears most at', 
-      lyrics_sorted[length(lyrics_sorted)], 'times.', '\n')
+      lyrics_sorted[length(lyrics_sorted)], 'times.', 'For non-stop words', paste0('"', word_data$word[1], '"'), 
+      'appears', paste0('"', word_data$n[1], '"'), 'times in this song.', '\n')
 
+  # create wordcloud
+  suppressWarnings(wordcloud2(word_data, minSize = 1))
+}
+## END
+##########################################################################
+
+
+###########################################################################
+############################  album_wordcloud  ############################
+##                                                                       ##
+## example usage                                                         ##
+# album_wordcloud(album = 'once more round the sun', artist = 'Mastodon') #
+###########################################################################
+
+album_wordcloud <- function(album, artist) {
+  
+  # now using the geniusR package to scrape info
+  genius_data <- genius_album(artist = artist, album = album)
+  
+  tidy_genius <- genius_data %>% 
+    unnest_tokens(word, lyric) %>% 
+    anti_join(stop_words)
+  
+  word_data <- tidy_genius %>% 
+    count(word, sort = TRUE)
+  
+  # extract and clean the lyrics
+  lyrics_clean <- genius_data$lyric %>%
+    gsub('<br>', ' ', .) %>%
+    gsub('.*<p>|</p>.*', '', .) %>%
+    gsub('  |   ', ' ', .) %>%
+    gsub("[[:punct:]]", "", .) %>%
+    strsplit(., split = ' ') %>%
+    unlist(.) %>%
+    tolower(.)
+  lyrics_clean <- lyrics_clean[lyrics_clean != ""]
+  
+  # explore/analysis of lyrics
+  
+  cat('\n', 'Wordcloud for', paste0('"', album, '"'), 'by', paste0('"', artist, '".'))
+  cat('\n', 'There are', genius_data$track_n %>% unique() %>% length(), 'tracks on this album.')
+  # lyrics_sorted <- table(lyrics_clean) %>% sort(.) 
+  # cat('\n', 'The word', paste0('"', names(lyrics_sorted)[length(lyrics_sorted)], '"'), 'appears most at', 
+  #     lyrics_sorted[length(lyrics_sorted)], 'times.', '\n')
+  
   # create wordcloud
   suppressWarnings(wordcloud2(word_data, minSize = 1))
 }
