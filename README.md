@@ -43,6 +43,8 @@ example:
 
 Provide the artist and album title and this function will generate a wordcloud, allowing direct visualisation of most present lyrics across the whole album. Additional statistics will be added in the future.
 
+example:
+
     album_wordcloud(album = 'master of puppets', artist = 'Metallica')
     
     Wordcloud for "master of puppets" by "Metallica".
@@ -102,6 +104,8 @@ word_data <- tidy_genius %>%
 
 wordcloud2(word_data, minSize = 1)
 ```
+
+Wordcloud generated from the above:
 
 ![](images/artist_mastodon_wordcloud.png)
 
