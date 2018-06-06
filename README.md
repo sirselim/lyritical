@@ -9,7 +9,7 @@ The idea came to me as I was driving listening to Spotify - I wonder how many ti
 
 Currently there are functions to explore the number of times words are used in a given song, or a given album. `lyritical` originally used web-scraping to pull lyrics from lyrics.com using the `rvest` package. However, due to changes in lyrics.com which 'broke' the original scripts, and the development of a really nice R package in the form of [geniusR](https://github.com/JosiahParry/geniusR), `lyritical` has been reborn.
 
-I now use [geniusR](https://github.com/JosiahParry/geniusR) to do the heavy lifting and pull data from genius.com, `tidytext` helps with formatting and removing of stop-words and `wordcloud2` is now used to create the actual image. I believe this is a nicer workflow and should make life easier when I get around to developing this into a Shiny app.
+I now use [geniusR](https://github.com/JosiahParry/geniusR) to do the heavy lifting and pull data from [genius.com](https://genius.com/), `tidytext` helps with formatting and removing of stop-words and `wordcloud2` is used to create the actual image. I believe this is a nicer workflow and should make life easier when I get around to developing this into a Shiny app.
 
 ## Dependencies
 
@@ -70,7 +70,7 @@ example:
   - *verbose*: display a scrolling list of all songs as they are scraped from lyrics.com  
   - *max.words*: how many words should the wordcloud render?
 
-![](images/artist_mastodon_cloud.png)
+![](images/artist_mastodon_wordcloud.png)
 
     there were 106 songs found on lyrics.com for Mastodon  
     12 songs had lyrics available  
