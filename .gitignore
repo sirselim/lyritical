@@ -2,3 +2,6 @@
 lyritical_testing.R
 .Rproj.user
 lyritical.Rproj
+ui.R
+server.R
+global.R
