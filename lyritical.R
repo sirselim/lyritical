@@ -59,6 +59,7 @@ song_wordcloud <- function(song, artist) {
 ##                                                                       ##
 ## example usage                                                         ##
 # album_wordcloud(album = 'once more round the sun', artist = 'Mastodon') #
+# album_wordcloud(album = 'master of puppets', artist = 'Metallica')      #
 ###########################################################################
 
 album_wordcloud <- function(album, artist) {
